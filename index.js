@@ -7,12 +7,16 @@ title.textContent = 'Etch a Sketch!';
 const grid = document.createElement('div');
 grid.className = 'grid';
 
-let totalSquare = (16 * 16) + 16;
+let totalSquare = 16 * 16 + 16;
 
 for (let i = 1; i < totalSquare; i++) {
   const square = document.createElement('div');
   square.className = 'square';
   grid.append(square);
+
+  square.addEventListener('mouseover', () => {
+    square.style.backgroundColor = 'violet';
+  });
 }
 
 root.appendChild(container);
