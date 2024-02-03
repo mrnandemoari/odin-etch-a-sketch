@@ -9,11 +9,17 @@ const appMenu = document.createElement('div');
 appMenu.className = 'app-menu';
 const menuResize = document.createElement('button');
 menuResize.textContent = 'Resize';
-menuResize.className = 'resize__button';
+menuResize.className = 'button';
+const menuColorize = document.createElement('button');
+menuColorize.textContent = 'Colorize On';
+menuColorize.className = 'button';
+const menuReset = document.createElement('button');
+menuReset.textContent = 'Reset';
+menuReset.className = 'button';
 const gridContainer = document.createElement('div');
 gridContainer.className = 'grid-container';
 
-// Functions
+// Functions and Events
 const createGrid = (row = 16) => {
   gridContainer.innerHTML = '';
 
@@ -25,30 +31,54 @@ const createGrid = (row = 16) => {
     gridContainer.appendChild(square);
 
     square.addEventListener('mouseover', () => {
-      square.style.backgroundColor = 'violet';
+      if (isColorize) {
+        square.style.backgroundColor = generateRandomColors();
+      } else {
+        square.style.backgroundColor = 'rgba(0, 0, 0, 1)';
+      }
+    });
+
+    menuReset.addEventListener('click', () => {
+      square.style.backgroundColor = 'rgba(0, 0, 0, 0)';
     });
   }
 };
+
+let isColorize = false;
+
+menuColorize.addEventListener('click', () => {
+  isColorize = !isColorize;
+  menuColorize.textContent = isColorize ? 'Colorize Off' : 'Colorize On';
+});
 
 createGrid();
 
 menuResize.addEventListener('click', () => {
   let newSize = prompt('Enter the number of squares per side (max 100):');
 
-  // Validate user input
   newSize = parseInt(newSize);
-  if (isNaN(newSize) || newSize <= 0) {
+  if (isNaN(newSize) || newSize <= 0 || newSize > 100) {
     alert('Please enter a valid number from 1 to 100');
-    return;
+    newSize = prompt('Enter the number of squares per side (max 100):');
   }
 
-  // Limit the size to a maximum of 100 squares
-  newSize = Math.min(newSize, 100);
-
-  // Generate new grid
   createGrid(newSize);
 });
 
+const generateRandomNumbers = (max) => {
+  return Math.floor(Math.random() * max);
+};
+
+const generateRandomColors = () => {
+  let red = generateRandomNumbers(256);
+  let green = generateRandomNumbers(256);
+  let blue = generateRandomNumbers(256);
+  let alpha = `0.${generateRandomNumbers(10)}`;
+  const rgba = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+
+  return rgba;
+};
+
 app.appendChild(appContainer);
 appContainer.append(appTitle, appMenu, gridContainer);
-appMenu.append(menuResize);
+appMenu.append(menuResize, menuColorize, menuReset);
